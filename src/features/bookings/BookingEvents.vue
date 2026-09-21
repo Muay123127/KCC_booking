@@ -139,7 +139,7 @@ const clearRoomFilter = () => {
                   :key="item.id" 
                   class="hover:bg-blue-50/40 transition-colors"
                 >
-                  <td class="py-3.5 px-4 font-bold text-blue-600 whitespace-nowrap">{{ item.code }}</td>
+                  <td class="py-3.5 px-4 font-bold text-blue-600 whitespace-nowrap">{{ item.id }}</td>
                   <td class="py-3.5 px-4 font-medium text-slate-800 max-w-xs truncate" :title="item.title">
                     {{ item.title }}
                   </td>

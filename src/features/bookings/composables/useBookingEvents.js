@@ -15,12 +15,6 @@ export const useBookingEvents = (selectedRoomId, selectedRoomName) => {
       bookings.value = selectedRoomId.value
         ? await fetchBookings(selectedRoomId.value)
         : []
-      console.groupCollapsed('[BookingEvents] Loaded data')
-      console.log('Rows:', bookings.value)
-      console.log('First row keys:', Object.keys(bookings.value[0] || {}))
-      console.log('Selected room ID:', selectedRoomId.value || '(none)')
-      console.log('Selected room:', selectedRoomName.value || '(none)')
-      console.groupEnd()
     } catch (error) {
       errorMessage.value = 'ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບ API ໄດ້, ກຳລັງສະແດງຂໍ້ມູນຕົວຢ່າງ'
       throw error
@@ -35,7 +29,7 @@ export const useBookingEvents = (selectedRoomId, selectedRoomName) => {
     if (searchQuery.value) {
       const query = searchQuery.value.toLowerCase()
       result = result.filter(item => [
-        item.code,
+        item.id,
         item.title,
         item.requester,
         item.department,
