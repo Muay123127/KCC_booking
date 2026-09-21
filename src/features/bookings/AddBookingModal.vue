@@ -39,7 +39,7 @@ const handleClose = () => {
       <!-- Modal Body -->
       <div class="p-8">
         <h3 class="text-lg font-bold text-slate-800 mb-6">
-          Administrator - Rooms - {{ room.name }} :
+           Rooms - {{ room.name }} :
         </h3>
 
         <div v-if="errorMessage" class="mb-4 p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-lg text-xs">
