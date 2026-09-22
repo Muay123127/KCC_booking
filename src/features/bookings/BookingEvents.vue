@@ -43,36 +43,7 @@ const closeDropdown = (e) => {
   }
 }
 
-// ฟังก์ชันดึงค่าข้อมูลตาม Key ของคอลัมน์เสริม (พร้อมระบบ Debug ดูค่าที่ได้จาก API ผ่าน Console)
-const getColumnValue = (item, key) => {
-  // บรรทัดนี้จะช่วยแสดงโครงสร้างข้อมูลทั้งหมดของแต่ละแถวใน F12 -> Console
-  console.log(`Checking key [${key}] for item:`, item)
 
-  switch (key) {
-    case 'purpose': 
-      return item.purpose || item.description_text || item.description || item.reason || item.note || '-'
-    case 'creator': 
-      return item.creator || item.requester || item.user_name || item.created_by || item.user || '-'
-    case 'creator_dept': 
-      return item.creator_dept || item.department || item.creator_department || item.dept || '-'
-    case 'created_for': 
-      return item.created_for || item.for_user || item.target_user || '-'
-    case 'division': 
-      return item.division || item.div || '-'
-    case 'unit': 
-      return item.unit || item.section || '-'
-    case 'emp_code': 
-      return item.emp_code || item.employee_code || item.staff_id || item.employee_id || '-'
-    case 'user_dept': 
-      return item.user_dept || item.department || item.user_department || '-'
-    case 'food_drink': 
-      return item.food_drink || item.has_food || item.food || item.is_food || '-'
-    case 'created_date': 
-      return item.created_date || item.created_at || item.date || item.timestamp || '-'
-    default: 
-      return item[key] || '-'
-  }
-}
 
 // ดึงข้อมูลจาก API จริง
 const fetchBookingsData = async () => {
@@ -257,48 +228,17 @@ const handleNewBooking = () => {
                   <th class="py-3 px-4">ສິ້ນສຸດ</th>
                   <th class="py-3 px-4">ລວມເປັນຊົ່ວໂມງ</th>
 
-                  <!-- คอลัมน์เสริมที่จะแสดงผลเมื่อถูกติ๊กเลือก Checkbox -->
+                  <!-- คอลัมน์เสริมที่จะแสดงผลเมื่อถูกติ๊กเลือก Checkbox
                   <th 
                     v-for="col in optionalColumns.filter(c => c.visible)" 
                     :key="col.key" 
                     class="py-3 px-4 whitespace-nowrap"
                   >
                     {{ col.label }}
-                  </th>
+                  </th> -->
                   
-                  <!-- ปุ่มเปิดกล่องเลือกคอลัมน์ด้านขวา (ล็อกขนาดความกว้างเพื่อไม่ให้ขยับ) -->
-                  <th class="py-3 px-4 text-center relative column-settings-container w-12 whitespace-nowrap">
-                    <button 
-                      @click.stop="toggleColumnDropdown"
-                      class="p-1 hover:bg-slate-200 rounded text-slate-500 transition cursor-pointer inline-block" 
-                      title="ປັບແຕ່ງຄໍລໍ້າ"
-                    >
-                      <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                      </svg>
-                    </button>
-
-                    <!-- Dropdown Box ทางขวาสำหรับเลือกหัวข้อเพิ่มเติม -->
-                    <div 
-                      v-if="showColumnDropdown" 
-                      class="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 rounded-xl shadow-lg z-50 p-2 text-left"
-                    >
-                      <div class="max-h-60 overflow-y-auto space-y-1">
-                        <label 
-                          v-for="col in optionalColumns" 
-                          :key="col.key" 
-                          class="flex items-center space-x-2 px-2 py-1.5 hover:bg-slate-50 rounded-lg cursor-pointer text-slate-700"
-                        >
-                          <input 
-                            type="checkbox" 
-                            v-model="col.visible" 
-                            class="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                          >
-                          <span class="truncate">{{ col.label }}</span>
-                        </label>
-                      </div>
-                    </div>
-                  </th>
+                 
+           
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100">
@@ -310,7 +250,7 @@ const handleNewBooking = () => {
                   <td class="py-3.5 px-4 w-10">
                     <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
                   </td>
-                  <td class="py-3.5 px-4 font-bold text-blue-600 whitespace-nowrap">{{ item.code || item.id }}</td>
+                  <td class="py-3.5 px-4 font-bold text-blue-600 whitespace-nowrap">{{ item.id || item.id }}</td>
                   <td class="py-3.5 px-4 font-medium text-slate-800 max-w-xs truncate" :title="item.title">
                     {{ item.title }}
                   </td>
