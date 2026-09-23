@@ -18,10 +18,10 @@
         <router-link 
           v-for="item in menuItems" 
           :key="item.name"
-          :to="item.path"
+          :to="item.route"
           class="flex items-center px-3 py-2.5 rounded-lg transition-all duration-150"
           :class="[
-            isCurrentRoute(item.path) ? 'bg-blue-600 text-white font-medium shadow-md shadow-blue-600/30' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'
+            isCurrentRoute(item.route) ? 'bg-blue-600 text-white font-medium shadow-md shadow-blue-600/30' : 'hover:bg-slate-800 text-slate-400 hover:text-slate-200'
           ]"
         >
           <span class="mr-3 text-base">{{ item.icon }}</span>
@@ -45,19 +45,20 @@ import { useRoute } from 'vue-router'
 const route = useRoute()
 const logoUrl = `${import.meta.env.API_URL}/api/company/logo/image`
 
-// ປ່ຽນຈາກ href ເປັນ path ໃຫ້ກົງກັບ router/index.js
-const menuItems = ref([
-  { name: 'Booking Rooms', icon: '🏢', path: '/' },
-  { name: 'Booking Cars', icon: '🚘', path: '/booking-cars' }, // ປັບຕາມ router ທີ່ມີ
-  { name: 'IT Tickets', icon: '🎫', path: '/it-tickets' },     // ປັບຕາມ router ທີ່ມີ
-  // { name: 'My Profile', icon: '👤', path: '/profile' },
-  { name: 'Log out', icon: '↪', path: '/logout' }
-])
+// ใช้ route object เพื่อส่ง query type_id ให้กับหน้า Booking ตามเมนู
+const menuItems = [
+  { name: 'Dashboard', icon: '🏢', route: { path: '/' } },
+  { name: 'Booking Rooms', icon: '🏠', route: { path: '/booking-rooms', query: { type_id: 1 } } },
+  { name: 'Booking Cars', icon: '🚘', route: { path: '/booking-cars', query: { type_id: 2 } } },
+  { name: 'IT Tickets', icon: '🎫', route: { path: '/it-tickets' } },
+  { name: 'Log out', icon: '↪', route: { path: '/logout' } }
+]
 
-// ตรวจสอบว่าเมນູໃດກຳລັງactive ຢູ່
-const isCurrentRoute = (path) => {
-  if (path === '/' && route.path === '/') return true
-  if (path !== '/' && route.path.startsWith(path)) return true
+// ตรวจสอบว่าเมนูใดกำลัง active อยู่
+const isCurrentRoute = (routeConfig) => {
+  const targetPath = routeConfig?.path || '/'
+  if (targetPath === '/' && route.path === '/') return true
+  if (targetPath !== '/' && route.path.startsWith(targetPath)) return true
   return false
 }
 </script>

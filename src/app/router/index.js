@@ -3,7 +3,9 @@ import HomeView from '@/features/Home/views/HomeView.vue'
 import LoginView from '@/features/auth/view/LoginView.vue'
 import Logout from '@/features/auth/view/Logout.vue'
 import ProfileView from '@/features/profiles/ProfileView.vue'
-import MeetingRooms from "@/features/bookings/BookingEvents.vue";
+import MeetingRooms from '@/features/bookings/BookingEvents.vue'
+import RoomEventsView from '@/features/rooms/RoomEventsView.vue'
+import CarEventsView from '@/features/cars/CarEventsView.vue'
 import AddBooking from '@/features/bookings/AddBookingModal.vue'
 import BookingViewDetail from '@/features/bookings/BookingViewDetail.vue'
 
@@ -32,9 +34,21 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/booking-rooms',
+    name: 'BookingRooms',
+    component: RoomEventsView,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/meeting-rooms/:id?', 
     name: 'MeetingRooms',
     component: MeetingRooms,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/booking-cars',
+    name: 'BookingCars',
+    component: CarEventsView,
     meta: { requiresAuth: true }
   },
   {

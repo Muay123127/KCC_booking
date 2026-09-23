@@ -12,7 +12,10 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token =
-      localStorage.getItem("user-token") || localStorage.getItem("token");
+      localStorage.getItem("user-token") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("access_token");
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,36 +27,22 @@ api.interceptors.request.use(
 );
 
 /**
- * 1. ดึงประเภทการจอง / ประเภทห้อง
- * Endpoint: GET /api/booking/types
- */
-export const getBookingTypes = async () => {
-  const response = await api.get("/api/booking/types");
-  return response.data;
-};
-
-/**
- * 2. ดึงรายการจองทั้งหมด
+ * ดึงรายการจองทั้งหมด 
  * Endpoint: GET /api/bookings
+ * ตัวนี้เหมือนbackendจะตั้งชื่อผิดเพราะของมูล returned เป็น all of room and car list  แต่ endpoint ชื่อ bookings
+ * if give type_id=1 will return only room list
+ * if give type_id=2 will return only car list
  */
-export const getMeetingBookings = async () => {
-  const response = await api.get("/api/bookings");
+export const getRoomsAndCarsList = async (type_id) => {
+  const response = await api.get(`/api/bookings?type_id=${type_id}`);
   const bookings = normalizeCollection(response.data);
   return bookings.map(normalizeBooking);
 };
 
 /**
- * 3. ดึงรายการจองแบบกรองตาม Type ID (เช่น ?type_id=1)
- * Endpoint: GET /api/bookings?type_id=1
- */
-export const getBookingsByType = async (typeId) => {
-  const response = await api.get(`/api/bookings?type_id=${typeId}`);
-  return normalizeCollection(response.data);
-};
-
-/**
- * 4. ดึงข้อมูลเหตุการณ์/รายละเอียดการจองตาม Booking ID (เช่น ?booking_id=2)
+ * ดึงรายการจองตามห้องที่เลือก
  * Endpoint: GET /api/booking/events?booking_id=2
+ * ตัวนี้คือ list of booking events in room or car 
  */
 export const getBookingEvents = async (bookingId) => {
   const response = await api.get(`/api/booking/events?booking_id=${bookingId}`);
@@ -61,9 +50,8 @@ export const getBookingEvents = async (bookingId) => {
 };
 
 /**
- * 5. ดึงข้อมูลรายละเอียดการจองแบบรายตัวตาม Booking ID
- * Try the real detail endpoint first, but fall back to the booking events endpoint
- * because the backend detail route is currently returning 500 in this environment.
+ * ดึงข้อมูลรายละเอียดการจองแบบรายตัวตาม Booking ID
+ * Endpoint: GET /api/booking/detail?booking_id=2
  */
 export const getBookingDetail = async (bookingId) => {
   try {
@@ -86,7 +74,10 @@ export const getBookingDetail = async (bookingId) => {
 export const createBooking = async (bookingData) => {
   try {
     const token =
-      localStorage.getItem("user-token") || localStorage.getItem("token") || "";
+      localStorage.getItem("user-token") ||
+      localStorage.getItem("token") ||
+      localStorage.getItem("access_token") ||
+      "";
 
     const response = await axios.post(`${api.defaults.baseURL}booking/create/`, bookingData, {
       headers: {

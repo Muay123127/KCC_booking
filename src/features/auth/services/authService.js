@@ -18,8 +18,14 @@ export const authenticate = async (username, password) => {
 }
 
 export const saveSession = (response) => {
-  localStorage.setItem('user-token', response.token)
-  localStorage.removeItem('token')
+  const token = response.token || response.access_token || response.accessToken || ''
+
+  if (token) {
+    localStorage.setItem('user-token', token)
+    localStorage.setItem('token', token)
+    localStorage.setItem('access_token', token)
+  }
+
   localStorage.setItem('username', response.result?.name || '')
 
   if (response.result?.uid !== undefined) {
@@ -30,6 +36,7 @@ export const saveSession = (response) => {
 export const clearSession = () => {
   localStorage.removeItem('user-token')
   localStorage.removeItem('token')
+  localStorage.removeItem('access_token')
   localStorage.removeItem('username')
   localStorage.removeItem('odoo_uid')
 }

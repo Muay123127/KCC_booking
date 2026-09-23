@@ -3,9 +3,21 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Navbar from '@/app/components/Navbar.vue'
 import Sidebar from '@/app/components/Sidebar.vue'
-import { getMeetingBookings, getBookingEvents } from '@/app/api/bookingApi'
+import { getRoomsAndCarsList, getBookingEvents } from '@/app/api/bookingApi'
+
+const props = defineProps({
+  typeId: {
+    type: Number,
+    default: 1,
+  },
+  entityLabel: {
+    type: String,
+    default: 'Meeting Room',
+  },
+})
 
 const route = useRoute()
+const selectedTypeId = ref(Number(route.query.type_id ?? props.typeId ?? 1))
 const selectedRoomId = ref(null)
 const selectedRoomName = ref('')
 
@@ -55,7 +67,7 @@ const fetchBookingsData = async () => {
     if (selectedRoomId.value) {
       data = await getBookingEvents(selectedRoomId.value)
     } else {
-      data = await getMeetingBookings()
+      data = await getRoomsAndCarsList(selectedTypeId.value)
     }
     bookingsList.value = data
   } catch (error) {
@@ -66,7 +78,20 @@ const fetchBookingsData = async () => {
   }
 }
 
+const pageTitle = computed(() => {
+  return selectedTypeId.value === 2 ? 'Car Bookings' : 'Meeting Room Bookings'
+})
+
 onMounted(() => {
+  const typeFromQuery = Number(route.query.type_id)
+  if (!Number.isNaN(typeFromQuery) && typeFromQuery > 0) {
+    selectedTypeId.value = typeFromQuery
+  }
+
+  if (props.typeId) {
+    selectedTypeId.value = Number(props.typeId)
+  }
+
   if (route.query.roomId) {
     selectedRoomId.value = route.query.roomId
   }
@@ -183,10 +208,12 @@ const handleNewBooking = () => {
               </svg>
             </div>
             <div>
-              <h1 class="text-base font-bold text-slate-800">Meeting Room Bookings</h1>
+              <h1 class="text-base font-bold text-slate-800">{{ pageTitle }}</h1>
               <p class="text-xs text-slate-500">
                 <span v-if="selectedRoomName">ກຳລັງສະແດງປະຫວັດຂອງ: <strong class="text-blue-600">{{ selectedRoomName }}</strong></span>
-                <span v-else>ຈັດການ ແລະ ตรวจสอบรายการจองห้องประชุมทั้งหมดภายในระบบ</span>
+                <span v-else>
+                  {{ selectedTypeId === 2 ? 'ຈັດການ ແລະ ตรวจสอบรายการจองรถทั้งหมดภายในระบบ' : 'ຈັດການ ແລະ ตรวจสอบรายการจองห้องประชุมทั้งหมดภายในระบบ' }}
+                </span>
               </p>
             </div>
           </div>
