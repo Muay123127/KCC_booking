@@ -8,7 +8,12 @@ import Sidebar from '@/app/components/Sidebar.vue'
 const rooms = ref([])
 
 onMounted(async () => {
-  rooms.value = await getRoomsAndCarsList(1)
+  try {
+    rooms.value = await getRoomsAndCarsList(1)
+    console.log('[RoomEventsView] rooms:', rooms.value)
+  } catch (error) {
+    console.error('[RoomEventsView] failed to load rooms:', error)
+  }
 })
 </script>
 

@@ -3,12 +3,12 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import Navbar from '@/app/components/Navbar.vue'
 import Sidebar from '@/app/components/Sidebar.vue'
-import { getRoomsAndCarsList, getBookingEvents } from '@/app/api/bookingApi'
+import { getRoomsAndCarsList, getBookingDetail } from '@/app/api/bookingApi'
 
 const props = defineProps({
   typeId: {
     type: Number,
-    default: 1,
+    default: null,
   },
   entityLabel: {
     type: String,
@@ -65,7 +65,7 @@ const fetchBookingsData = async () => {
   try {
     let data = []
     if (selectedRoomId.value) {
-      data = await getBookingEvents(selectedRoomId.value)
+      data = await getBookingDetail(selectedRoomId.value)
     } else {
       data = await getRoomsAndCarsList(selectedTypeId.value)
     }
@@ -249,6 +249,8 @@ const handleNewBooking = () => {
             <div class="flex items-center space-x-2 text-xs text-slate-600">
               <span>ສະແດງ</span>
               <select 
+                id="items-per-page"
+                name="items-per-page"
                 v-model.number="itemsPerPage" 
                 @change="handleItemsPerPageChange"
                 class="bg-white border border-slate-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
@@ -278,6 +280,8 @@ const handleNewBooking = () => {
                   <th class="py-3 px-4 w-10">
                     <!-- Checkbox เลือกทั้งหมด (Select All) -->
                     <input 
+                      id="select-all-bookings"
+                      name="select-all-bookings"
                       type="checkbox" 
                       :checked="isAllSelected"
                       :indeterminate="isIndeterminate"
@@ -302,6 +306,8 @@ const handleNewBooking = () => {
   >
     <td class="py-3.5 px-4 w-10" @click.stop>
       <input 
+        :id="`booking-${item.id}`"
+        name="booking-selection"
         type="checkbox" 
         :value="item.id" 
         v-model="selectedItems"

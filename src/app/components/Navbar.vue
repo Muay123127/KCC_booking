@@ -50,6 +50,8 @@
         <!-- Search Field -->
         <div class="relative">
           <input 
+            id="global-search"
+            name="global-search"
             v-model="searchInput"
             @input="emitSearch"
             type="text" 

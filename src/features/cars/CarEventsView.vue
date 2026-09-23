@@ -8,7 +8,12 @@ import Sidebar from '@/app/components/Sidebar.vue'
 const cars = ref([])
 
 onMounted(async () => {
-  cars.value = await getRoomsAndCarsList(2)
+  try {
+    cars.value = await getRoomsAndCarsList(2)
+    console.log('[CarEventsView] cars:', cars.value)
+  } catch (error) {
+    console.error('[CarEventsView] failed to load cars:', error)
+  }
 })
 </script>
 

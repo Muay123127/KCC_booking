@@ -26,10 +26,13 @@ export function useBookdetail() {
   const loadBookings = async (bookingId) => {
     loading.value = true
     error.value = null
+    console.log('[useBookdetail] loadBookings:', { bookingId })
 
     try {
       const response = await fetchBookingDetailApi(bookingId)
+      console.log('[useBookdetail] API response:', response)
       bookings.value = normalizeList(response)
+      console.log('[useBookdetail] bookings:', bookings.value)
     } catch (err) {
       error.value = err?.message || 'ເກີດຂໍ້ຜິດພາດໃນການໂຫຼດຂໍ້ມູນ'
       console.error('Error in loadBookings:', err)

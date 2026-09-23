@@ -83,11 +83,11 @@
                   <span class="font-semibold text-slate-600">Notification</span>
                   <div class="flex items-center space-x-4 text-slate-700">
                     <label class="flex items-center space-x-2 cursor-pointer">
-                      <input type="radio" name="notif" class="text-rose-600 focus:ring-rose-500" />
+                      <input id="notif-email" type="radio" name="notif" class="text-rose-600 focus:ring-rose-500" />
                       <span>Handle by Emails</span>
                     </label>
                     <label class="flex items-center space-x-2 cursor-pointer">
-                      <input type="radio" name="notif" checked class="text-rose-600 focus:ring-rose-500" />
+                      <input id="notif-odoo" type="radio" name="notif" checked class="text-rose-600 focus:ring-rose-500" />
                       <span>Handle in Odoo</span>
                     </label>
                   </div>
@@ -102,7 +102,7 @@
               <div class="space-y-4">
                 <div class="flex items-center justify-between">
                   <span class="font-semibold text-slate-600">Language</span>
-                  <select class="border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none">
+                  <select id="profile-language" name="language" class="border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none">
                     <option>English (US)</option>
                     <option>Lao (ລາວ)</option>
                   </select>
@@ -110,14 +110,14 @@
 
                 <div class="flex items-center justify-between">
                   <span class="font-semibold text-slate-600">Timezone</span>
-                  <select class="border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none">
+                  <select id="profile-timezone" name="timezone" class="border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none">
                     <option>Asia/Bangkok</option>
                   </select>
                 </div>
 
                 <div class="flex items-center justify-between">
                   <span class="font-semibold text-slate-600">Sidebar Type</span>
-                  <select class="border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none">
+                  <select id="profile-sidebar-type" name="sidebar-type" class="border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none">
                     <option>Large</option>
                     <option>Compact</option>
                   </select>

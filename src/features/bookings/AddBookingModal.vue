@@ -81,6 +81,8 @@ const handleClose = () => {
                 ເລີ່ມ <span class="text-rose-500">*</span>
               </label>
               <input
+                id="booking-start-date"
+                name="start-date"
                 type="datetime-local"
                 v-model="form.startDate"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
@@ -94,6 +96,8 @@ const handleClose = () => {
                 ຫາ <span class="text-rose-500">*</span>
               </label>
               <input
+                id="booking-end-date"
+                name="end-date"
                 type="datetime-local"
                 v-model="form.endDate"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
@@ -109,6 +113,8 @@ const handleClose = () => {
               ຫົວຂໍ້ການປະຊຸມ
             </label>
             <textarea
+              id="meeting-title"
+              name="meeting-title"
               v-model="form.meetingTitle"
               rows="3"
               class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition resize-y"
@@ -167,6 +173,8 @@ const handleClose = () => {
               ຜູ້ຈອງ
             </label>
             <input
+              id="booking-username"
+              name="username"
               type="text"
               v-model="form.username"
               readonly
@@ -180,6 +188,8 @@ const handleClose = () => {
               ພະແນກຜູ້ສ້າງ
             </label>
             <input
+              id="department-creator"
+              name="department-creator"
               type="text"
               v-model="form.departmentCreator"
               class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
@@ -192,6 +202,8 @@ const handleClose = () => {
               ຈຳນວນຄົນ <span class="text-rose-500">*</span>
             </label>
             <input
+              id="participants-count"
+              name="participants-count"
               type="number"
               v-model="form.participantsCount"
               class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
@@ -204,6 +216,8 @@ const handleClose = () => {
               ພະແນກຜູ້ໃຊ້
             </label>
             <input
+              id="department-user"
+              name="department-user"
               type="text"
               v-model="form.departmentUser"
               class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
@@ -216,6 +230,8 @@ const handleClose = () => {
               ເບີໂທ (Tel) <span class="text-rose-500">*</span>
             </label>
             <input
+              id="contact-tel"
+              name="contact-tel"
               type="text"
               v-model="form.tel"
               placeholder="ປ້ອນເບີໂທຕິດຕໍ່..."
@@ -234,6 +250,8 @@ const handleClose = () => {
               ຈຸດປະສົງ <span class="text-rose-500">*</span>
             </label>
             <textarea
+              id="booking-objective"
+              name="booking-objective"
               v-model="form.objective"
               rows="3"
               placeholder="ປ້ອນຈຸດປະສົງການຈອງ (Description)..."

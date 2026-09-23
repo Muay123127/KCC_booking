@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import AddBookingModal from '../bookings/AddBookingModal.vue'
+import { getBookingDetail } from '@/app/api/bookingApi.js'
 
 const props = defineProps({
   resources: {
@@ -15,12 +16,71 @@ const props = defineProps({
 
 const isModalOpen = ref(false)
 const currentResource = ref(null)
+const bookingDetails = ref({})
+const loadingDetails = ref({})
 
 const resourceItems = computed(() => props.resources.map((item) => ({
   ...item,
   type: props.type,
   typeLabel: props.type === 'car' ? 'Car' : 'Room',
 })))
+
+const loadBookingDetails = async (resources) => {
+  const detailEntries = await Promise.all(resources.map(async (resource) => {
+    if (!resource.id) return [resource.id, []]
+
+    loadingDetails.value = { ...loadingDetails.value, [resource.id]: true }
+    try {
+      const details = await getBookingDetail(resource.id)
+      return [resource.id, details]
+    } catch (error) {
+      console.error('[ResourceGrid] booking detail failed:', {
+        resourceId: resource.id,
+        error,
+      })
+      return [resource.id, []]
+    } finally {
+      loadingDetails.value = { ...loadingDetails.value, [resource.id]: false }
+    }
+  }))
+
+  bookingDetails.value = Object.fromEntries(detailEntries)
+}
+
+watch(() => props.resources, loadBookingDetails, { immediate: true })
+
+const bookingsFor = (item) => {
+  if (loadingDetails.value[item.id]) return []
+
+  const details = bookingDetails.value[item.id]
+  if (Array.isArray(details) && details.length > 0) return details.filter(hasBookingData)
+
+  const nestedBookings = item.bookings || item.booking_details || item.events
+  if (Array.isArray(nestedBookings) && nestedBookings.length > 0) {
+    return nestedBookings.filter(hasBookingData)
+  }
+
+  if (item.booking && hasBookingData(item.booking)) return [item.booking]
+
+  return hasBookingData(item)
+    ? [item]
+    : []
+}
+
+const hasBookingData = (booking) => [
+  booking.create_uid,
+  booking.start_date,
+  booking.start_time,
+  booking.stop_date,
+  booking.stop_time,
+].some((value) => value && value !== '-')
+
+const displayCreateUid = (booking) => {
+  if (typeof booking.create_uid === 'object') {
+    return booking.create_uid.name || booking.create_uid.login || booking.create_uid.id || '-'
+  }
+  return booking.create_uid || '-'
+}
 
 const openBookingModal = (resource) => {
   currentResource.value = resource
@@ -70,7 +130,7 @@ const handleSaveBooking = (bookingData) => {
           </button>
 
           <router-link
-            :to="item.type === 'car' ? { path: '/booking-cars', query: { roomId: item.id, roomName: item.name, type_id: 2 } } : { path: '/booking-rooms', query: { roomId: item.id, roomName: item.name, type_id: 1 } }"
+            :to="{ path: '/meeting-rooms', query: { roomId: item.id, roomName: item.name, type_id: item.type === 'car' ? 2 : 1 } }"
             class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold py-2 px-3 rounded-xl flex items-center justify-center no-underline"
           >
             History
@@ -82,20 +142,27 @@ const handleSaveBooking = (bookingData) => {
         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Upcoming</p>
 
         <div
-          v-for="(booking, index) in item.bookings || []"
+          v-for="(booking, index) in bookingsFor(item)"
           :key="`${item.type}-${item.id}-${index}`"
           class="p-2.5 rounded-xl bg-slate-50/80 hover:bg-blue-50/40 border border-slate-100 transition text-xs flex flex-col space-y-1"
         >
           <div class="font-bold text-rose-600 flex items-center">
             <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-2 shrink-0"></span>
-            <span class="truncate" :title="booking.code">{{ booking.code }}</span>
+            <span class="truncate" :title="displayCreateUid(booking)">{{ displayCreateUid(booking) }}</span>
           </div>
           <div class="text-slate-500 pl-3.5 text-[11px]">
-            <span>{{ booking.time }}</span>
+            <span>
+              {{ booking.start_date }} {{ booking.start_time }}
+              - {{ booking.stop_date }} {{ booking.stop_time }}
+            </span>
           </div>
         </div>
 
-        <div v-if="!item.bookings || item.bookings.length === 0" class="text-center py-8 text-slate-400 text-xs bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+        <div v-if="loadingDetails[item.id]" class="text-center py-8 text-slate-400 text-xs bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
+          Loading bookings...
+        </div>
+
+        <div v-else-if="bookingsFor(item).length === 0" class="text-center py-8 text-slate-400 text-xs bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
           No booking yet
         </div>
       </div>
