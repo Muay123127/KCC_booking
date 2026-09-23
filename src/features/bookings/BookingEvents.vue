@@ -15,6 +15,9 @@ const errorMessage = ref('')
 const bookingsList = ref([])
 const searchQuery = ref('')
 
+// เก็บรายการ ID ของแถวที่ถูกเลือก (Selected Rows)
+const selectedItems = ref([])
+
 // สถานะการเปิด-ปิด Dropdown ตั้งค่าคอลัมน์
 const showColumnDropdown = ref(false)
 
@@ -42,8 +45,6 @@ const closeDropdown = (e) => {
     showColumnDropdown.value = false
   }
 }
-
-
 
 // ดึงข้อมูลจาก API จริง
 const fetchBookingsData = async () => {
@@ -106,6 +107,33 @@ const paginatedBookings = computed(() => {
   const end = start + itemsPerPage.value
   return filteredBookings.value.slice(start, end)
 })
+
+// Computed สำหรับควบคุมสถานะ Select All ในหน้าปัจจุบัน
+const isAllSelected = computed(() => {
+  if (paginatedBookings.value.length === 0) return false
+  return paginatedBookings.value.every(item => selectedItems.value.includes(item.id))
+})
+
+const isIndeterminate = computed(() => {
+  if (paginatedBookings.value.length === 0) return false
+  const someSelected = paginatedBookings.value.some(item => selectedItems.value.includes(item.id))
+  return someSelected && !isAllSelected.value
+})
+
+// ฟังก์ชันสลับการเลือกทั้งหมดในหน้าปัจจุบัน
+const toggleSelectAll = (e) => {
+  const checked = e.target.checked
+  const pageIds = paginatedBookings.value.map(item => item.id)
+  
+  if (checked) {
+    // เพิ่ม ID ของหน้าปัจจุบันเข้าไป (ไม่ให้ซ้ำกัน)
+    const uniqueSet = new Set([...selectedItems.value, ...pageIds])
+    selectedItems.value = Array.from(uniqueSet)
+  } else {
+    // เอา ID ของหน้าปัจจุบันออก
+    selectedItems.value = selectedItems.value.filter(id => !pageIds.includes(id))
+  }
+}
 
 const handleItemsPerPageChange = () => {
   currentPage.value = 1
@@ -186,7 +214,8 @@ const handleNewBooking = () => {
           <!-- Table Header Stats & Select Items Per Page -->
           <div class="px-6 py-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50">
             <div class="text-xs font-medium text-slate-500">
-              รายการทั้งหมด: <strong class="text-slate-800">{{ filteredBookings.length }}</strong> รายการ
+              รายการทั้งหมด: <strong class="text-slate-800">{{ filteredBookings.length }}</strong> รายการ 
+              <span v-if="selectedItems.length > 0" class="ml-2 text-blue-600 font-semibold">({| selectedItems.length |} selected)</span>
             </div>
             
             <!-- ตัวเลือกจำนวนรายการที่จะแสดงต่อหน้า -->
@@ -220,63 +249,47 @@ const handleNewBooking = () => {
               <thead>
                 <tr class="bg-slate-100/70 text-slate-600 font-semibold border-b border-slate-200">
                   <th class="py-3 px-4 w-10">
-                    <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
+                    <!-- Checkbox เลือกทั้งหมด (Select All) -->
+                    <input 
+                      type="checkbox" 
+                      :checked="isAllSelected"
+                      :indeterminate="isIndeterminate"
+                      @change="toggleSelectAll"
+                      class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    >
                   </th>
                   <th class="py-3 px-4">ເລກການຈອງ</th>
                   <th class="py-3 px-4">ຊື່</th>
                   <th class="py-3 px-4">ເລີ່ມ</th>
                   <th class="py-3 px-4">ສິ້ນສຸດ</th>
                   <th class="py-3 px-4">ລວມເປັນຊົ່ວໂມງ</th>
-
-                  <!-- คอลัมน์เสริมที่จะแสดงผลเมื่อถูกติ๊กเลือก Checkbox
-                  <th 
-                    v-for="col in optionalColumns.filter(c => c.visible)" 
-                    :key="col.key" 
-                    class="py-3 px-4 whitespace-nowrap"
-                  >
-                    {{ col.label }}
-                  </th> -->
-                  
-                 
-           
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100">
-                <tr 
-                  v-for="item in paginatedBookings" 
-                  :key="item.id" 
-                  class="hover:bg-blue-50/40 transition-colors"
-                >
-                  <td class="py-3.5 px-4 w-10">
-                    <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer">
-                  </td>
-                  <td class="py-3.5 px-4 font-bold text-blue-600 whitespace-nowrap">{{ item.id || item.id }}</td>
-                  <td class="py-3.5 px-4 font-medium text-slate-800 max-w-xs truncate" :title="item.title">
-                    {{ item.title }}
-                  </td>
-                  <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">{{ item.start_time }}</td>
-                  <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">{{ item.end_time }}</td>
-                  <td class="py-3.5 px-4 font-semibold text-slate-700 whitespace-nowrap">{{ item.duration }}</td>
-
-                  <!-- ข้อมูลในคอลัมน์เสริมที่ถูกเลือกแสดง -->
-                  <td 
-                    v-for="col in optionalColumns.filter(c => c.visible)" 
-                    :key="col.key" 
-                    class="py-3.5 px-4 text-slate-700 whitespace-nowrap"
-                  >
-                    {{ getColumnValue(item, col.key) }}
-                  </td>
-
-                  <td></td>
-                </tr>
-
-                <!-- Empty State -->
-                <tr v-if="filteredBookings.length === 0">
-                  <td :colspan="6 + optionalColumns.filter(c => c.visible).length + 1" class="text-center py-12 text-slate-400">
-                    ບໍ່ພົບຂໍ້ມູນການຈອງຫ້ອງປະຊຸມໃນຂະນະນີ້
-                  </td>
-                </tr>
-              </tbody>
+          <tbody class="divide-y divide-slate-100">
+  <!-- ให้นำโค้ດ `tr` ທີ່ກຽມໄວ້ມາแทนที่ບ່ອນນີ້ -->
+  <tr 
+    v-for="item in paginatedBookings" 
+    :key="item.id" 
+    @click="$router.push({ name: 'BookingViewDetail', params: { id: item.id } })"
+    class="hover:bg-blue-50/40 transition-colors cursor-pointer"
+  >
+    <td class="py-3.5 px-4 w-10" @click.stop>
+      <input 
+        type="checkbox" 
+        :value="item.id" 
+        v-model="selectedItems"
+        class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+      >
+    </td>
+    <td class="py-3.5 px-4 font-bold text-blue-600 whitespace-nowrap">{{ item.id }}</td>
+    <td class="py-3.5 px-4 font-medium text-slate-800 max-w-xs truncate" :title="item.title">
+      {{ item.title }}
+    </td>
+    <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">{{ item.start_time }}</td>
+    <td class="py-3.5 px-4 text-slate-600 whitespace-nowrap">{{ item.end_time }}</td>
+    <td class="py-3.5 px-4 font-semibold text-slate-700 whitespace-nowrap">{{ item.duration }}</td>
+  </tr>
+</tbody>
             </table>
           </div>
 
