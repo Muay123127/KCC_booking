@@ -73,7 +73,7 @@ import { onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import Navbar from '@/app/components/Navbar.vue'
 import Sidebar from '@/app/components/Sidebar.vue'
-import { useBookdetail } from '@/features/bookings/composables/useBookdetail'
+import { useBookdetail } from '@/features/bookings/composables/useBookdetail.js'
 
 const route = useRoute()
 const { getBookingById, loadBookings, loading, error } = useBookdetail()

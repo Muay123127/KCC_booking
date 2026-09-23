@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-// กำหนด Base URL และ Axios Instance
+// ใช้ Vite proxy เพื่อหลีกเลี่ยง CORS ในช่วง dev
 const api = axios.create({
-  baseURL: import.meta.env.API_URL,
+  baseURL: '/',
   headers: {
     'Content-Type': 'application/json'
   }

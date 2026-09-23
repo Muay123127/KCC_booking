@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = import.meta.env.API_URL
+const baseURL = '/'
 
 // กำหนด Base URL และ Axios Instance
 const api = axios.create({
