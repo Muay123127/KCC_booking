@@ -139,8 +139,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import Sidebar from '@/app/components/Sidebar.vue'
-import Navbar from '@/app/components/Navbar.vue'
+import Sidebar from '@/shared/components/Sidebar.vue'
+import Navbar from '@/shared/components/Navbar.vue'
 
 const userName = ref('')
 const currentTab = ref('preferences')

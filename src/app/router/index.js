@@ -3,10 +3,10 @@ import HomeView from '@/features/Home/views/HomeView.vue'
 import LoginView from '@/features/auth/view/LoginView.vue'
 import Logout from '@/features/auth/view/Logout.vue'
 import ProfileView from '@/features/profiles/ProfileView.vue'
-import MeetingRooms from '@/features/bookings/BookingEvents.vue'
+import MeetingRooms from '@/features/bookings/views/BookingEvents.vue'
 import RoomEventsView from '@/features/rooms/RoomEventsView.vue'
 import CarEventsView from '@/features/cars/CarEventsView.vue'
-import AddBooking from '@/features/bookings/AddBookingModal.vue'
+import AddBooking from '@/features/bookings/views/AddBookingModal.vue'
 
 const routes = [
   {

@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import Navbar from '@/app/components/Navbar.vue'
-import Sidebar from '@/app/components/Sidebar.vue'
-import { getRoomsAndCarsList } from '@/app/api/bookingApi.js'
+import Navbar from '@/shared/components/Navbar.vue'
+import Sidebar from '@/shared/components/Sidebar.vue'
+import { getRoomsAndCarsList } from '@/services/api/bookingApi.js'
 
 const rooms = ref([])
 const cars = ref([])

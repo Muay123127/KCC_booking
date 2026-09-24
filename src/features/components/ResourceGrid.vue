@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
-import AddBookingModal from '../bookings/AddBookingModal.vue'
-import { getBookingDetail } from '@/app/api/bookingApi.js'
+import AddBookingModal from '../bookings/views/AddBookingModal.vue'
+import { getBookingDetail } from '@/services/api/bookingApi.js'
 
 const props = defineProps({
   resources: {

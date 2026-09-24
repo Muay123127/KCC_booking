@@ -1,9 +1,9 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
-import Navbar from '@/app/components/Navbar.vue'
-import Sidebar from '@/app/components/Sidebar.vue'
-import { getRoomsAndCarsList, getBookingDetail } from '@/app/api/bookingApi'
+import Navbar from '@/shared/components/Navbar.vue'
+import Sidebar from '@/shared/components/Sidebar.vue'
+import { getRoomsAndCarsList, getBookingDetail } from '@/services/api/bookingApi.js'
 
 const props = defineProps({
   typeId: {

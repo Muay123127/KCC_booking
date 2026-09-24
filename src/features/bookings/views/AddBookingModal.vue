@@ -1,6 +1,6 @@
 <script setup>
 import { toRef } from "vue";
-import { useBookingForm } from "./composables/useBookingForm";
+import { useBookingForm } from "../composables/useBookingForm";
 
 const props = defineProps({
   room: {
