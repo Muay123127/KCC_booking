@@ -1,14 +1,12 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import Navbar from '@/shared/components/Navbar.vue'
-import Sidebar from '@/shared/components/Sidebar.vue'
+import { ref, computed, onMounted, inject } from 'vue'
 import { getRoomsAndCarsList } from '@/services/api/bookingApi.js'
 
 const rooms = ref([])
 const cars = ref([])
 const loading = ref(true)
 const errorMessage = ref('')
-const searchQuery = ref('')
+const searchQuery = inject('layoutSearch', ref(''))
 const userName = ref(localStorage.getItem('username') || '')
 
 const fetchDashboardData = async () => {
@@ -58,10 +56,6 @@ onMounted(() => {
   fetchDashboardData()
 })
 
-const handleSearch = (keyword) => {
-  searchQuery.value = keyword
-}
-
 const resourceList = computed(() => {
   const roomItems = rooms.value.map((item) => ({ ...item, type: 'room', typeLabel: 'Room' }))
   const carItems = cars.value.map((item) => ({ ...item, type: 'car', typeLabel: 'Car' }))
@@ -78,13 +72,7 @@ const totalResources = computed(() => resourceList.value.length)
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-100 flex font-sans text-slate-800 overflow-hidden relative">
-    <Sidebar />
-
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-      <Navbar @search="handleSearch" />
-
-      <main class="flex-1 overflow-y-auto bg-slate-50 p-8">
+  <div class="p-8 relative">
         <div class="max-w-7xl mx-auto space-y-6">
           <div class="flex items-center justify-between gap-3">
             <div>
@@ -139,9 +127,6 @@ const totalResources = computed(() => resourceList.value.length)
 
           </div>
         </div>
-      </main>
-    </div>
-
   </div>
 </template>
 

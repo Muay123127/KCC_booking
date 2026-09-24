@@ -1,14 +1,6 @@
 <template>
   <div class="flex h-screen bg-slate-100 font-sans text-sm overflow-hidden antialiased">
-    <!-- Sidebar Component (ຖ້າມີ) -->
-    <Sidebar />
-
-    <div class="flex-1 flex flex-col min-w-0">
-      <!-- Navbar Component -->
-      <Navbar />
-
-      <!-- Main Content Container -->
-      <main class="flex-1 p-8 overflow-y-auto">
+    <main class="p-8 text-sm overflow-y-auto">
         <div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
           
           <!-- Header Profile Section -->
@@ -132,15 +124,12 @@
           </div>
 
         </div>
-      </main>
-    </div>
+    </main>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import Sidebar from '@/shared/components/Sidebar.vue'
-import Navbar from '@/shared/components/Navbar.vue'
 
 const userName = ref('')
 const currentTab = ref('preferences')

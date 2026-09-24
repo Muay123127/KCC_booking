@@ -1,8 +1,6 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
-import Navbar from '@/shared/components/Navbar.vue'
-import Sidebar from '@/shared/components/Sidebar.vue'
 import { getRoomsAndCarsList, getBookingDetail } from '@/services/api/bookingApi.js'
 
 const props = defineProps({
@@ -25,7 +23,7 @@ const selectedRoomName = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 const bookingsList = ref([])
-const searchQuery = ref('')
+const searchQuery = inject('layoutSearch', ref(''))
 
 // เก็บรายการ ID ของแถวที่ถูกเลือก (Selected Rows)
 const selectedItems = ref([])
@@ -176,28 +174,13 @@ const nextPage = () => {
   }
 }
 
-const handleSearch = (keyword) => {
-  searchQuery.value = keyword
-  currentPage.value = 1
-}
-
 const handleNewBooking = () => {
   alert('ເປີດຟອມສ້າງການຈອງຫ້ອງປະຊຸມໃໝ່')
 }
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-100 flex font-sans text-slate-800 overflow-hidden">
-    <!-- Sidebar -->
-    <Sidebar />
-
-    <!-- Main Layout -->
-    <div class="flex-1 flex flex-col h-screen overflow-hidden">
-      <!-- Navbar -->
-      <Navbar @search="handleSearch" />
-
-      <!-- Content Area -->
-      <main class="flex-1 overflow-y-auto bg-slate-50/70 p-6">
+  <div class="bg-slate-50/70 p-6">
         
         <!-- Top Action Bar -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 bg-white p-4 rounded-2xl shadow-xs border border-slate-200/80">
@@ -351,8 +334,6 @@ const handleNewBooking = () => {
 
         </div>
 
-      </main>
-    </div>
   </div>
 </template>
 

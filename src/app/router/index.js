@@ -13,18 +13,19 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView, 
-    meta: { requiresAuth: true } // ຕ້ອງ Login ແລ້ວຈຶ່ງເຂົ້າໄດ້[cite: 1]
+    meta: { requiresAuth: true, layout: 'default' } // ຕ້ອງ Login ແລ້ວຈຶ່ງເຂົ້າໄດ້[cite: 1]
   },
   {
     path: '/login',
     name: 'Login',
     component: LoginView,
-    meta: { requiresGuest: true } // Login ແລ້ວຫ້າມເຂົ້ານີ້[cite: 1]
+    meta: { requiresGuest: true, layout: 'auth' } // Login ແລ້ວຫ້າມເຂົ້ານີ້[cite: 1]
   },
   {
     path: '/logout',
     name: 'logout',
-    component: Logout
+    component: Logout,
+    meta: { layout: 'auth' }
   },
   {
     path: '/profile',
