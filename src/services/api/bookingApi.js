@@ -34,23 +34,20 @@ export const getBookingEvents = async (bookingId) => {
 
 /**
  * ดึงข้อมูลlist of booking in room or car show in Upcoming booking list use in ResourceGrid.vue
- * Endpoint: POST /api/booking/detail
+ * Endpoint: GET /api/booking/detail
  * Body: { booking_id: 2 }
  */
 export const getBookingDetail = async (bookingId) => {
-  console.log('[getBookingDetail] request:', { bookingId });
 
   try {
     const response = await http.get(API_ENDPOINTS.bookings.detail, {
       params: { booking_id: bookingId },
+      data: { booking_id: bookingId },
     });
-    console.log('[getBookingDetail] raw response:', response.data);
     const details = normalizeCollection(response.data).map(normalizeBooking);
-    console.log('[getBookingDetail] normalized data:', details);
     return details;
   }
   catch (error) {
-    console.error('[getBookingDetail] API error:', error);
     throw error;
   }
 };
@@ -61,7 +58,6 @@ export const createBooking = async (bookingData) => {
 
     return response.data;
   } catch (error) {
-    console.error("API Error (createBooking):", error);
     throw error;
   }
 };

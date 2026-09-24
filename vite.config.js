@@ -30,6 +30,22 @@ export default defineConfig(({ mode }) => {
         target: env.API_URL,
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            if (req.method !== 'GET' || !req.url?.startsWith('/api/booking/detail')) {
+              return
+            }
+
+            const requestUrl = new URL(req.url, 'http://localhost')
+            const bookingId = requestUrl.searchParams.get('booking_id')
+            if (!bookingId) return
+
+            const body = JSON.stringify({ booking_id: Number(bookingId) })
+            proxyReq.setHeader('Content-Type', 'application/json')
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(body))
+            proxyReq.write(body)
+          })
+        },
       },
     },
   },
