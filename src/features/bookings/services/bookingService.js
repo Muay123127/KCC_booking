@@ -2,7 +2,7 @@ import {
   getBookingEvents,
   getBookingDetail,
   createBooking as createBookingRequest,
-} from '@/app/api/bookingApi.js'
+} from '@/services/api/bookingApi.js'
 
 export const fetchBookings = (bookingId) => getBookingEvents(bookingId)
 export const fetchBookingDetail = (bookingId) => getBookingDetail(bookingId)

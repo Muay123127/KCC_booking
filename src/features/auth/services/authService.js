@@ -1,4 +1,4 @@
-import { loginuser } from '@/app/api/loginapi'
+import { loginuser } from '@/services/api/loginapi'
 
 export const authenticate = async (username, password) => {
   const response = await loginuser(username, password)

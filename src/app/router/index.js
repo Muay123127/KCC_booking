@@ -7,7 +7,6 @@ import MeetingRooms from '@/features/bookings/BookingEvents.vue'
 import RoomEventsView from '@/features/rooms/RoomEventsView.vue'
 import CarEventsView from '@/features/cars/CarEventsView.vue'
 import AddBooking from '@/features/bookings/AddBookingModal.vue'
-import BookingViewDetail from '@/features/bookings/BookingViewDetail.vue'
 
 const routes = [
   {
@@ -56,14 +55,6 @@ const routes = [
     name: 'book',
     component: AddBooking,
     meta: { requiresAuth: true }
-  },
-  {
-    path: '/bookings/:id',
-    name: 'BookingViewDetail',
-    component: BookingViewDetail,
-    // หรือถ้าใช้แบบ Lazy Loading:
-    // component: () => import('@/features/bookings/BookingViewDetail.vue'),
-    props: true // อนุญาตให้ส่ง params เป็น props ไปยัง Component ได้โดยตรง (ถ้าต้องการ)
   },
   {
     path: '/:pathMatch(.*)*',
