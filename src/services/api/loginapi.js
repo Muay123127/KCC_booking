@@ -1,20 +1,12 @@
-import axios from 'axios'
+import http from './http.ts'
+import { API_ENDPOINTS } from './endpoints.ts'
 
-const baseURL = '/'
-
-// กำหนด Base URL และ Axios Instance
-const api = axios.create({
-  baseURL,
-  headers: {
-    'Content-Type': 'application/json'
-  }
-})
-export const loginuser = async(login,password)=>{
-    const response = await api.post('/api/user/login1',{
+export const loginuser = async (login, password) => {
+    const response = await http.post(API_ENDPOINTS.auth.login, {
         login,
         password
-        } )
-        // console.log("Full Response:", response.data)
+    })
     return response.data
 }
-export default api
+
+export default http

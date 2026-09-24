@@ -1,36 +1,5 @@
-import axios from "axios";
-
-// ใช้เส้นทางเดียวกับ Vite proxy เพื่อหลีกเลี่ยง CORS ในช่วง dev
-const api = axios.create({
-  baseURL: "/",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-const getStoredToken = () => {
-  const token =
-    localStorage.getItem("user-token") ||
-    localStorage.getItem("token") ||
-    localStorage.getItem("access_token");
-
-  return token?.replace(/^Bearer\s+/i, "").replace(/^"|"$/g, "").trim();
-};
-
-// 🛡️ แนบ Token อัตโนมัติทุกครั้งที่มีการ Request
-api.interceptors.request.use(
-  (config) => {
-    const token = getStoredToken();
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
+import http from './http.ts';
+import { API_ENDPOINTS } from './endpoints.ts';
 
 /**
  * ดึงรายการจองทั้งหมด 
@@ -40,7 +9,9 @@ api.interceptors.request.use(
  * if give type_id=2 will return only car list
  */
 export const getRoomsAndCarsList = async (type_id) => {
-  const response = await api.get(`/api/bookings?type_id=${type_id}`);
+  const response = await http.get(API_ENDPOINTS.bookings.list, {
+    params: { type_id },
+  });
   const bookings = normalizeCollection(response.data);
   const normalizedBookings = bookings.map(normalizeBooking);
   return normalizedBookings;
@@ -52,7 +23,9 @@ export const getRoomsAndCarsList = async (type_id) => {
  * ตัวนี้คือ list of booking events in room or car use in ฺBookingEventsView.vue
  */
 export const getBookingEvents = async (bookingId) => {
-  const response = await api.get(`/api/booking/events?booking_id=${bookingId}`);
+  const response = await http.get(API_ENDPOINTS.bookings.events, {
+    params: { booking_id: bookingId },
+  });
   const events = normalizeCollection(response.data).map(normalizeBooking);
   return events;
 };
@@ -66,8 +39,8 @@ export const getBookingDetail = async (bookingId) => {
   console.log('[getBookingDetail] request:', { bookingId });
 
   try {
-    const response = await api.get('/api/booking/detail', {
-      booking_id: bookingId,
+    const response = await http.get(API_ENDPOINTS.bookings.detail, {
+      params: { booking_id: bookingId },
     });
     console.log('[getBookingDetail] raw response:', response.data);
     const details = normalizeCollection(response.data).map(normalizeBooking);
@@ -82,14 +55,7 @@ export const getBookingDetail = async (bookingId) => {
 
 export const createBooking = async (bookingData) => {
   try {
-    const token = getStoredToken() || "";
-
-    const response = await axios.post(`${api.defaults.baseURL}booking/create/`, bookingData, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await http.post(API_ENDPOINTS.bookings.create, bookingData);
 
     return response.data;
   } catch (error) {
@@ -168,4 +134,4 @@ const calculateDuration = (start, stop) => {
   return Number.isFinite(duration) ? `${duration} hr` : "-";
 };
 
-export default api;
+export default http;
