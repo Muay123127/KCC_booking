@@ -93,7 +93,7 @@ const closeBookingModal = () => {
 }
 
 const handleSaveBooking = (bookingData) => {
-  console.log('Successfully saved booking data:', bookingData)
+  console.log('[ResourceGrid] Booking save confirmed by API:', bookingData)
   closeBookingModal()
 }
 </script>

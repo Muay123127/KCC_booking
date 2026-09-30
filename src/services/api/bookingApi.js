@@ -52,12 +52,58 @@ export const getBookingDetail = async (bookingId) => {
   }
 };
 
+/** @param {import('@/features/bookings/types/booking').CreateBookingPayload} bookingData */
 export const createBooking = async (bookingData) => {
   try {
-    const response = await http.post(API_ENDPOINTS.bookings.create, bookingData);
+    const tel = typeof bookingData.tel === 'string' ? bookingData.tel.trim() : ''
+    console.info('[createBooking] Required tel field:', {
+      present: Boolean(tel),
+      length: tel.length,
+    });
 
-    return response.data;
+    if (!tel) {
+      throw new Error('A contact telephone number is required')
+    }
+
+    console.info('[createBooking] JSON-RPC params:', {
+      keys: Object.keys(bookingData),
+      start_date: bookingData.start_date,
+      start_time: bookingData.start_time,
+      stop_date: bookingData.stop_date,
+      stop_time: bookingData.stop_time,
+      telPresent: Boolean(tel),
+    });
+
+    const response = await http.post(API_ENDPOINTS.bookings.create, {
+      jsonrpc: '2.0',
+      method: 'call',
+      params: { ...bookingData, tel },
+      id: null,
+    });
+
+    console.log('[createBooking] HTTP response:', {
+      status: response.status,
+      data: response.data,
+    });
+
+    const apiError = response.data?.error
+    if (apiError || response.data?.status === false || response.data?.success === false) {
+      const message = apiError?.data?.message
+        || apiError?.message
+        || response.data?.message
+        || 'The booking was rejected by the API'
+      const error = new Error(message)
+      error.apiResponse = response.data
+      throw error
+    }
+
+    return response.data?.result ?? response.data;
   } catch (error) {
+    console.error('[createBooking] Request failed:', {
+      status: error.response?.status,
+      data: error.response?.data || error.apiResponse,
+      message: error.message,
+    });
     throw error;
   }
 };

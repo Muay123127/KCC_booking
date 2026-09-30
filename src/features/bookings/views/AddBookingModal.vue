@@ -1,15 +1,13 @@
 <script setup>
 import { toRef } from "vue";
 import { useBookingForm } from "../composables/useBookingForm";
+import BaseButton from "@/shared/components/BaseButton.vue";
+import BaseInput from "@/shared/components/BaseInput.vue";
 
 const props = defineProps({
   room: {
     type: Object,
-    default: () => ({
-      id: 5,
-      name: "ຫ້ອງປະຊຸມໃຫຍ່ (Grand) ຊັ້ນ 1",
-      capacity: "ຮອງຮັບໄດ້ 24 ຄົນ",
-    }),
+    required: true,
   },
 });
 
@@ -71,6 +69,7 @@ const handleClose = () => {
         </div>
 
         <form
+          id="booking-form"
           @submit.prevent="handleSave"
           class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5"
         >
@@ -80,12 +79,13 @@ const handleClose = () => {
               <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
                 ເລີ່ມ <span class="text-rose-500">*</span>
               </label>
-              <input
+              <BaseInput
                 id="booking-start-date"
                 name="start-date"
                 type="datetime-local"
                 v-model="form.startDate"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                wrapper-class="flex-1 min-w-0"
+                input-class="rounded-lg focus:ring-blue-500/20 focus:border-blue-500"
                 required
               />
             </div>
@@ -95,12 +95,13 @@ const handleClose = () => {
               <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
                 ຫາ <span class="text-rose-500">*</span>
               </label>
-              <input
+              <BaseInput
                 id="booking-end-date"
                 name="end-date"
                 type="datetime-local"
                 v-model="form.endDate"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+                wrapper-class="flex-1 min-w-0"
+                input-class="rounded-lg focus:ring-blue-500/20 focus:border-blue-500"
                 required
               />
             </div>
@@ -172,13 +173,14 @@ const handleClose = () => {
             <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
               ຜູ້ຈອງ
             </label>
-            <input
+            <BaseInput
               id="booking-username"
               name="username"
               type="text"
               v-model="form.username"
               readonly
-              class="w-full bg-slate-100 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-600 font-medium cursor-not-allowed"
+              wrapper-class="flex-1 min-w-0"
+              input-class="bg-slate-100 rounded-lg text-slate-600 font-medium cursor-not-allowed"
             />
           </div>
 
@@ -187,12 +189,13 @@ const handleClose = () => {
             <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
               ພະແນກຜູ້ສ້າງ
             </label>
-            <input
+            <BaseInput
               id="department-creator"
               name="department-creator"
               type="text"
               v-model="form.departmentCreator"
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+              wrapper-class="flex-1 min-w-0"
+              input-class="rounded-lg focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
 
@@ -201,12 +204,14 @@ const handleClose = () => {
             <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
               ຈຳນວນຄົນ <span class="text-rose-500">*</span>
             </label>
-            <input
+            <BaseInput
               id="participants-count"
               name="participants-count"
               type="number"
-              v-model="form.participantsCount"
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+              v-model.number="form.participantsCount"
+              wrapper-class="flex-1 min-w-0"
+              input-class="rounded-lg focus:ring-blue-500/20 focus:border-blue-500"
+              required
             />
           </div>
 
@@ -215,12 +220,13 @@ const handleClose = () => {
             <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
               ພະແນກຜູ້ໃຊ້
             </label>
-            <input
+            <BaseInput
               id="department-user"
               name="department-user"
               type="text"
               v-model="form.departmentUser"
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+              wrapper-class="flex-1 min-w-0"
+              input-class="rounded-lg focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
 
@@ -229,13 +235,14 @@ const handleClose = () => {
             <label class="w-28 text-xs font-semibold text-slate-700 shrink-0">
               ເບີໂທ (Tel) <span class="text-rose-500">*</span>
             </label>
-            <input
+            <BaseInput
               id="contact-tel"
               name="contact-tel"
               type="text"
               v-model="form.tel"
               placeholder="ປ້ອນເບີໂທຕິດຕໍ່..."
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition"
+              wrapper-class="flex-1 min-w-0"
+              input-class="rounded-lg focus:ring-blue-500/20 focus:border-blue-500"
               required
             />
           </div>
@@ -266,23 +273,21 @@ const handleClose = () => {
       <div
         class="px-8 py-4 bg-slate-50 border-t border-slate-100 flex items-center space-x-3"
       >
-        <button
-          @click="handleSave"
-          :disabled="loading"
-          class="bg-[#243746] hover:bg-[#1a2833] text-white text-xs font-semibold px-5 py-2 rounded-lg shadow-sm transition cursor-pointer flex items-center space-x-2 disabled:opacity-50"
+        <BaseButton
+          type="submit"
+          form="booking-form"
+          :loading="loading"
+          class="px-5 py-2 rounded-lg shadow-sm"
         >
-          <span
-            v-if="loading"
-            class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"
-          ></span>
-          <span>{{ loading ? "ກຳລັງບັນທຶກ..." : "Save" }}</span>
-        </button>
-        <button
+          {{ loading ? "ກຳລັງບັນທຶກ..." : "Save" }}
+        </BaseButton>
+        <BaseButton
+          variant="secondary"
           @click="handleClose"
-          class="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold px-5 py-2 rounded-lg transition cursor-pointer"
+          class="px-5 py-2 rounded-lg shadow-none"
         >
           Close
-        </button>
+        </BaseButton>
       </div>
     </div>
   </div>

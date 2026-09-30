@@ -6,6 +6,6 @@ export const API_ENDPOINTS = {
 		list: '/api/bookings',
 		events: '/api/booking/events',
 		detail: '/api/booking/detail',
-		create: '/booking/create/',
+		create: '/api/booking/create/',
 	},
 } as const

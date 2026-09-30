@@ -10,6 +10,14 @@ defineProps({
 		type: String,
 		default: '',
 	},
+	wrapperClass: {
+		type: String,
+		default: '',
+	},
+	inputClass: {
+		type: String,
+		default: '',
+	},
 	id: {
 		type: String,
 		required: true,
@@ -24,7 +32,7 @@ defineEmits(['update:modelValue'])
 </script>
 
 <template>
-	<label :for="id" class="block">
+	<label :for="id" class="block" :class="wrapperClass">
 		<span v-if="label" class="block text-xs font-semibold text-slate-700 mb-1.5">
 			{{ label }}
 		</span>
@@ -38,7 +46,7 @@ defineEmits(['update:modelValue'])
 				:value="modelValue"
 				v-bind="$attrs"
 				class="w-full py-2.5 text-xs bg-slate-50/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#243746]/20 focus:border-[#243746] transition placeholder:text-slate-400 text-slate-800"
-				:class="[$slots.prefix ? 'pl-9' : 'pl-3', $slots.suffix ? 'pr-10' : 'pr-3']"
+				:class="[$slots.prefix ? 'pl-9' : 'pl-3', $slots.suffix ? 'pr-10' : 'pr-3', inputClass]"
 				@input="$emit('update:modelValue', $event.target.value)"
 			/>
 			<span v-if="$slots.suffix" class="absolute inset-y-0 right-0 pr-3 flex items-center">

@@ -1,21 +1,10 @@
 import { onMounted, ref } from 'vue'
 import { saveBooking } from '../services/bookingService'
+import { getCurrentDateTimeLocal, parseDateTime } from '@/shared/utils/dateTime.js'
 
 export const useBookingForm = (room, emit) => {
   const loading = ref(false)
   const errorMessage = ref('')
-
-  // ปรับฟังก์ชันให้สร้างวันที่และเวลาปัจจุบัน พร้อมวินาที (รูปแบบ YYYY-MM-DDTHH:mm:ss)
-  const getCurrentDateTimeLocal = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const hours = String(now.getHours()).padStart(2, '0')
-    const minutes = String(now.getMinutes()).padStart(2, '0')
-    const seconds = String(now.getSeconds()).padStart(2, '0') // 👈 ดึงวินาทีปัจจุบัน
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}` // 👈 เพิ่ม :ss ต่อท้าย
-  }
 
   const form = ref({
     startDate: getCurrentDateTimeLocal(),
@@ -32,7 +21,7 @@ export const useBookingForm = (room, emit) => {
   })
 
   onMounted(() => {
-    const storedUser = localStorage.getItem('username') || 'ບ.ພັດທະໄຊ ລົງຖາວັດ'
+    const storedUser = localStorage.getItem('username') || 'Undefined User'
     form.value.username = storedUser
     form.value.additionalUser = storedUser
   })
@@ -41,43 +30,20 @@ export const useBookingForm = (room, emit) => {
     form.value.priority = level
   }
 
-  const parseDateTime = (dateTime) => {
-    if (!dateTime) {
-      return { date: '', time: '00:00:00' }
-    }
-
-    // รองรับรูปแบบ 'YYYY-MM-DDTHH:mm:ss' ที่ส่งมาจาก input
-    if (dateTime.includes('T')) {
-      const [datePart, timePart] = dateTime.split('T')
-      // ถ้า timePart มีแค่ HH:mm ให้เติม :00 แต่ถ้ามีวินาทีมาด้วยแล้วจะใช้ค่านั้นเลย
-      let formattedTime = timePart
-      if (timePart.length === 5) {
-        formattedTime = `${timePart}:00`
-      } else if (!timePart) {
-        formattedTime = '00:00:00'
-      }
-      return { date: datePart, time: formattedTime }
-    }
-
-    // รองรับเคสเก่าเผื่อมีข้อมูลที่เป็น 'DD/MM/YYYY HH:mm:ss' ค้างอยู่
-    if (dateTime.includes(' ')) {
-      const [datePart, timePart] = dateTime.split(' ')
-      if (datePart.includes('/')) {
-        const [day, month, year] = datePart.split('/')
-        return { date: `${year}-${month}-${day}`, time: timePart || '00:00:00' }
-      }
-      return { date: datePart, time: timePart || '00:00:00' }
-    }
-
-    return { date: dateTime, time: '00:00:00' }
-  }
-
   const handleSave = async () => {
-    loading.value = true
     errorMessage.value = ''
+    const tel = String(form.value.tel || '').trim()
+
+    if (!tel) {
+      errorMessage.value = 'ກະລຸນາປ້ອນເບີໂທຕິດຕໍ່'
+      return
+    }
+
+    loading.value = true
 
     const start = parseDateTime(form.value.startDate)
     const end = parseDateTime(form.value.endDate)
+    /** @type {import('../types/booking').CreateBookingPayload} */
     const payload = {
       item_id: room.value.id,
       start_date: start.date,
@@ -90,8 +56,8 @@ export const useBookingForm = (room, emit) => {
       meetingTitle: form.value.meetingTitle,
       departmentCreator: form.value.departmentCreator,
       departmentUser: form.value.departmentUser,
-      participantsCount: form.value.participantsCount,
-      tel: form.value.tel,
+      participantsCount: Number(form.value.participantsCount),
+      tel,
       username: form.value.username
     }
 
@@ -99,7 +65,7 @@ export const useBookingForm = (room, emit) => {
       const result = await saveBooking(payload)
       emit('save', result)
     } catch (error) {
-      errorMessage.value = 'ບໍ່ສາມາດບັນທຶກຂໍ້ມູນໄດ້, ກະລຸນາກວດສອບການເຊື່ອມຕໍ່ ຫຼື Token!'
+      errorMessage.value = error.message || 'ບໍ່ສາມາດບັນທຶກຂໍ້ມູນໄດ້'
       console.error(error)
     } finally {
       loading.value = false
